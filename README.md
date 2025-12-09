@@ -14,9 +14,6 @@ Environnement de développement avec LocalStack, OpenTofu, et AWS CLI local dans
 git clone <url-du-repo>
 cd terraform-docker
 
-# Créer le dossier workspace s'il n'existe pas
-mkdir -p workspace
-
 # Build et démarrer le container
 docker-compose up -d --build
 
