@@ -1,0 +1,16 @@
+services:
+  localstack:
+    build: .
+    container_name: localstack-dev
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,dynamodb,lambda,sqs,sns,ec2
+      - DEBUG=1
+      - TERRAFORM_BINARY=tofu
+    volumes:
+      - "./workspace:/workspace"
+      - "./localstack-data:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    stdin_open: true
+    tty: true
