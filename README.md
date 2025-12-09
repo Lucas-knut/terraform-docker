@@ -7,9 +7,16 @@ Environnement de développement avec LocalStack, OpenTofu, et AWS CLI local dans
 - Docker
 - Docker Compose
 
-## Démarrage
+## Installation
 
 ```bash
+# Cloner le projet
+git clone <url-du-repo>
+cd terraform
+
+# Créer le dossier workspace s'il n'existe pas
+mkdir -p workspace
+
 # Build et démarrer le container
 docker-compose up -d --build
 
@@ -37,41 +44,43 @@ python3 --version
 
 ### Workflow de travail
 
-Vous pouvez travailler directement sur votre Mac dans le dossier `workspace/`. Les fichiers sont automatiquement synchronisés avec le container.
+Les fichiers dans le dossier `workspace/` sont automatiquement synchronisés avec le container grâce aux volumes Docker.
 
-**Sur votre Mac :**
+**Édition des fichiers :**
 ```bash
 cd workspace/
-# Créer/éditer vos fichiers Terraform avec VSCode ou votre éditeur préféré
-code main.tf
+# Créer/éditer les fichiers Terraform avec votre éditeur préféré
+touch main.tf  # ou vim, nano, etc.
 ```
 
-**Exécuter les commandes dans le container :**
+**Exécution des commandes :**
+
+**Option 1 - Directement dans le container :**
 ```bash
 # Entrer dans le container
 docker-compose exec localstack bash
 
-# Dans le container, vos fichiers sont déjà synchronisés !
+# Dans le container, vos fichiers sont synchronisés dans /workspace
 cd /workspace
 tflocal init
 tflocal apply
 ```
 
-### Alias pour simplifier (optionnel)
+**Option 2 - Avec des alias (recommandé) :**
 
-Ajoutez à votre `~/.zshrc` (ou `~/.bashrc`) :
+Ajoutez ces alias à votre fichier de configuration shell (`~/.zshrc` ou `~/.bashrc`) :
 
 ```bash
-# Exécuter tflocal dans le container depuis votre Mac
-alias tflocal='docker-compose -f /Users/lucassteichen/dev/epsi/terraform/docker-compose.yml exec localstack tflocal'
+# Exécuter tflocal dans le container
+alias tflocal='docker-compose exec localstack tflocal'
 
-# Exécuter awslocal dans le container depuis votre Mac
-alias awslocal='docker-compose -f /Users/lucassteichen/dev/epsi/terraform/docker-compose.yml exec localstack awslocal'
+# Exécuter awslocal dans le container
+alias awslocal='docker-compose exec localstack awslocal'
 ```
 
-Puis rechargez : `source ~/.zshrc`
+Rechargez votre configuration : `source ~/.zshrc`
 
-Maintenant vous pouvez exécuter directement depuis votre Mac :
+Vous pouvez maintenant exécuter les commandes directement depuis votre machine hôte :
 ```bash
 cd workspace/
 tflocal init
@@ -107,14 +116,39 @@ docker-compose down
 
 # Arrêter et supprimer les données
 docker-compose down -v
-```
-
-## Structure
+## Structure du projet
 
 ```
 .
 ├── Dockerfile              # Image personnalisée avec tous les outils
 ├── docker-compose.yml      # Configuration Docker Compose
-├── workspace/              # Vos fichiers Terraform (synchronisé)
+├── .gitignore             # Fichiers à ignorer par Git
+├── README.md              # Documentation du projet
+├── workspace/             # Fichiers Terraform (synchronisé avec le container)
+│   └── *.tf              # Vos fichiers de configuration Terraform
+└── localstack-data/       # Données persistantes LocalStack (généré automatiquement)
+```
+
+**Note :** Le dossier `workspace/` doit être créé manuellement après le clonage. Les dossiers `localstack-data/` et les fichiers Terraform temporaires sont automatiquement ignorés par Git (voir `.gitignore`).
+
+## Outils disponibles dans le container
+
+- **OpenTofu** (v1.10.8) : Alternative open-source à Terraform
+- **tflocal** : Wrapper pour OpenTofu/Terraform avec LocalStack
+- **awslocal** : Wrapper pour AWS CLI avec LocalStack
+- **LocalStack** : Émulation locale des services AWS
+- **Python 3** : Pour scripts et outils additionnels
+
+## Services AWS émulés
+
+Par défaut, les services suivants sont activés :
+- S3 (stockage)
+- DynamoDB (base de données NoSQL)
+- Lambda (fonctions serverless)
+- SQS (files d'attente)
+- SNS (notifications)
+- EC2 (machines virtuelles)
+
+Pour modifier les services, éditez la variable `SERVICES` dans `docker-compose.yml`. workspace/              # Vos fichiers Terraform (synchronisé)
 └── localstack-data/        # Données persistantes LocalStack
 ```
