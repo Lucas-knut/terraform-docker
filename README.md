@@ -12,7 +12,7 @@ Environnement de développement avec LocalStack, OpenTofu, et AWS CLI local dans
 ```bash
 # Cloner le projet
 git clone <url-du-repo>
-cd terraform
+cd terraform-docker
 
 # Créer le dossier workspace s'il n'existe pas
 mkdir -p workspace
