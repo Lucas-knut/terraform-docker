@@ -111,11 +111,40 @@ tflocal apply
 ## Arrêt
 
 ```bash
+# Arrêter le container (conserve les données)
+docker-compose down
+
+# Arrêter et supprimer les données persistantes
+docker-compose down -v
+```
+
+## Persistence des données
+
+Le dossier `localstack-data/` stocke toutes les ressources AWS créées dans LocalStack (buckets S3, tables DynamoDB, etc.). Cela permet de **conserver vos données entre les redémarrages** du container.
+
+**Exemple :**
+```bash
+# Créer un bucket S3
+awslocal s3 mb s3://mon-bucket
+awslocal s3 cp fichier.txt s3://mon-bucket/
+
 # Arrêter le container
 docker-compose down
 
-# Arrêter et supprimer les données
+# Redémarrer
+docker-compose up -d
+
+# ✅ Le bucket existe toujours !
+awslocal s3 ls s3://mon-bucket/
+```
+
+**Pour repartir de zéro :**
+```bash
+# Supprimer toutes les données LocalStack
 docker-compose down -v
+rm -rf localstack-data/
+```
+
 ## Structure du projet
 
 ```
