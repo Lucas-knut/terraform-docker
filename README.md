@@ -175,6 +175,4 @@ Par défaut, les services suivants sont activés :
 - SNS (notifications)
 - EC2 (machines virtuelles)
 
-Pour modifier les services, éditez la variable `SERVICES` dans `docker-compose.yml`. workspace/              # Vos fichiers Terraform (synchronisé)
-└── localstack-data/        # Données persistantes LocalStack
-```
+Pour modifier les services, éditez la variable `SERVICES` dans `docker-compose.yml`.
