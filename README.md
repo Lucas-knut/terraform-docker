@@ -27,7 +27,10 @@ docker-compose logs -f
 ## Accès au container
 
 ```bash
-# Entrer dans le container
+# Entrer dans le container avec zsh (recommandé - terminal amélioré)
+docker-compose exec localstack zsh
+
+# Ou avec bash (également disponible)
 docker-compose exec localstack bash
 
 # Vérifier les outils installés
@@ -55,7 +58,7 @@ touch main.tf  # ou vim, nano, etc.
 **Option 1 - Directement dans le container :**
 ```bash
 # Entrer dans le container
-docker-compose exec localstack bash
+docker-compose exec localstack zsh
 
 # Dans le container, vos fichiers sont synchronisés dans /workspace
 cd /workspace
@@ -205,6 +208,7 @@ git push -u origin main
 - **awslocal** : Wrapper pour AWS CLI avec LocalStack
 - **LocalStack** : Émulation locale des services AWS
 - **Python 3** : Pour scripts et outils additionnels
+- **Zsh** avec **Oh My Zsh** et **Powerlevel10k** : Terminal amélioré avec autocomplétion et suggestions
 
 ## Services AWS émulés
 
