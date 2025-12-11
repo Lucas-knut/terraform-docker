@@ -2,4 +2,3 @@ localstack-data/
 workspace/.terraform/
 workspace/*.tfstate
 workspace/*.tfstate.backup
-workspace/.terraform.lock.hcl
