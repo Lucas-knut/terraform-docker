@@ -11,10 +11,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Installer OpenTofu
-RUN wget https://github.com/opentofu/opentofu/releases/download/v1.10.8/tofu_1.10.8_linux_amd64.zip \
-    && unzip tofu_1.10.8_linux_amd64.zip \
+RUN wget https://github.com/opentofu/opentofu/releases/download/v1.11.1/tofu_1.11.1_linux_amd64.zip \
+    && unzip tofu_1.11.1_linux_amd64.zip \
     && mv tofu /usr/local/bin/ \
-    && rm tofu_1.10.8_linux_amd64.zip \
+    && rm tofu_1.11.1_linux_amd64.zip \
     && ln -s /usr/local/bin/tofu /usr/local/bin/terraform
 
 # Installer Python et pip (si pas déjà présent)
