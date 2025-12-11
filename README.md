@@ -120,13 +120,16 @@ docker-compose down -v
 
 ## Persistence des données
 
-Le dossier `localstack-data/` stocke toutes les ressources AWS créées dans LocalStack (buckets S3, tables DynamoDB, etc.). Cela permet de **conserver vos données entre les redémarrages** du container.
+⚠️ **Note importante :** LocalStack en version gratuite **ne persiste pas** les données entre les redémarrages du container par défaut. Les ressources créées (buckets S3, tables DynamoDB, instances EC2, etc.) sont supprimées lors de l'arrêt du container.
 
-**Exemple :**
+Le dossier `localstack-data/` est monté mais LocalStack gratuit ne l'utilise pas pour la persistance. Pour avoir la persistance, il faut :
+- LocalStack Pro (version payante)
+- Ou utiliser des snapshots/exports manuels
+
+**Conséquence :**
 ```bash
 # Créer un bucket S3
 awslocal s3 mb s3://mon-bucket
-awslocal s3 cp fichier.txt s3://mon-bucket/
 
 # Arrêter le container
 docker-compose down
@@ -134,16 +137,12 @@ docker-compose down
 # Redémarrer
 docker-compose up -d
 
-# ✅ Le bucket existe toujours !
-awslocal s3 ls s3://mon-bucket/
+# ❌ Le bucket n'existe plus !
+awslocal s3 ls  # Vide
 ```
 
-**Pour repartir de zéro :**
-```bash
-# Supprimer toutes les données LocalStack
-docker-compose down -v
-rm -rf localstack-data/
-```
+**Solution de contournement :**
+Gardez vos fichiers Terraform dans `workspace/` et recréez l'infrastructure avec `tflocal apply` après chaque redémarrage.
 
 ## Structure du projet
 
