@@ -155,11 +155,52 @@ rm -rf localstack-data/
 └── localstack-data/       # Données persistantes LocalStack (généré automatiquement)
 ```
 
-**Note :** Le dossier `workspace/` doit être créé manuellement après le clonage. Les dossiers `localstack-data/` et les fichiers Terraform temporaires sont automatiquement ignorés par Git (voir `.gitignore`).
+## Gestion Git : Deux repos séparés
+
+Ce projet utilise **deux dépôts Git distincts** pour séparer l'environnement de développement du code infrastructure :
+
+### 📦 Repo 1 : Environnement Docker (ce repo)
+**Contenu :** Configuration de l'environnement de développement
+- `Dockerfile`
+- `docker-compose.yml`
+- `README.md`
+- `.gitignore` (qui ignore `workspace/` et `localstack-data/`)
+
+**Objectif :** Réutilisable pour plusieurs projets Terraform
+
+### 🚀 Repo 2 : Code Terraform (workspace/)
+**Contenu :** Configuration infrastructure Terraform
+- `*.tf` (provider, resources, etc.)
+- `.terraform.lock.hcl` (versions verrouillées des providers)
+- `.gitignore` (qui ignore `.terraform/` et `*.tfstate`)
+
+**Objectif :** Versionner uniquement le code infrastructure
+
+### Configuration initiale
+
+```bash
+# 1. Cloner le repo d'environnement
+git clone <repo-environnement> terraform-docker
+cd terraform-docker
+
+# 2. Initialiser le repo Terraform dans workspace/
+cd workspace
+git init
+git remote add origin <repo-terraform>
+git add .
+git commit -m "Initial Terraform configuration"
+git push -u origin main
+```
+
+**Avantages de cette approche :**
+- ✅ Environnement Docker réutilisable pour plusieurs projets
+- ✅ Code Terraform versionné indépendamment
+- ✅ Séparation claire entre infrastructure et configuration
+- ✅ Plusieurs projets Terraform peuvent utiliser le même environnement Docker
 
 ## Outils disponibles dans le container
 
-- **OpenTofu** (v1.10.8) : Alternative open-source à Terraform
+- **OpenTofu** (v1.11.1) : Alternative open-source à Terraform
 - **tflocal** : Wrapper pour OpenTofu/Terraform avec LocalStack
 - **awslocal** : Wrapper pour AWS CLI avec LocalStack
 - **LocalStack** : Émulation locale des services AWS
